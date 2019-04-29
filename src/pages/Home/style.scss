@@ -1,0 +1,39 @@
+h1 {
+	text-align: center;
+}
+
+.page-container {
+	width: 85vw;
+	margin: 1rem auto;
+}
+
+button,
+input {
+	padding: 1rem;
+	font-size: 1.8rem;
+	font-family: "Roboto", sans-serif;
+	background: #de5b49;
+	box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.3);
+	border: 0;
+	color: white;
+	border-radius: 5px;
+}
+
+button {
+	transition: transform 200ms ease-in;
+}
+
+button:hover {
+	background: #324d5c;
+	transition: all 200ms ease-in-out;
+}
+
+button:active {
+	transform: scale(0.95);
+	background: #253740;
+}
+
+input {
+	background: #fff;
+	color: black;
+}
