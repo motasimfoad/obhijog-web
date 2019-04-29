@@ -7,8 +7,7 @@ class Home extends Component {
 		caseNo: '',
 		trafficOffence: '',
 		fine: '',
-		deleteCaseNo: '',
-		viewCase: false
+		deleteCaseNo: ''
 	};
 
 	handleForm = (event) => {
@@ -44,12 +43,6 @@ class Home extends Component {
 			saveCase(caseDataToKeep);
 			window.location.reload();
 		}
-	};
-
-	changeViewCaseStatus = () => {
-		this.setState({
-			viewCase: !this.state.viewCase
-		});
 	};
 
 	printCaseJSON = () => {
@@ -127,14 +120,10 @@ class Home extends Component {
 						</button>
 					</form>
 				</Fragment>
-				<br /> <br />
-				<Fragment>{this.renderCase()}</Fragment>
-				{/* <button type="submit" onClick={this.changeViewCaseStatus}>
-					View Case JSON
-				</button> */}
 				<br />
 				<br />
-				{/* <div>{this.state.viewCase && <Fragment>{this.printCase()}</Fragment>}</div> */}
+				<br />
+				<br />
 				<Fragment>{this.printCaseJSON()}</Fragment>
 			</div>
 		);
