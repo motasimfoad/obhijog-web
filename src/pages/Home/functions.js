@@ -18,4 +18,25 @@ const clearLocalStorage = () => {
 	}
 };
 
-export { loadCase, saveCase, clearLocalStorage };
+const sortCaseAndSave = () => {
+	const caseData = loadCase();
+
+	// sorting caseData in Ascending Order
+	caseData.sort((a, b) => {
+		const firstCaseNum = Number(a.caseNo);
+		const secondCaseNum = Number(b.caseNo);
+
+		if (firstCaseNum < secondCaseNum) {
+			return -1; // return a
+		} else if (firstCaseNum > secondCaseNum) {
+			return 1; // return b
+		} else {
+			return 0; // return any one of them
+		}
+	});
+
+	saveCase(caseData);
+	window.location.reload();
+};
+
+export { loadCase, saveCase, sortCaseAndSave, clearLocalStorage };
