@@ -1,6 +1,30 @@
 import React, { Component, Fragment } from 'react';
+import { GraphQLClient } from 'graphql-request';
+
 import { loadCase, saveCase, sortCaseAndSave, clearLocalStorage } from './functions';
 import './style.scss';
+
+const client = new GraphQLClient('https://api.graph.cool/simple/v1/cjuvnbmub0zij0176xcsvoni9', {
+	headers: {
+		Authorization: 'Bearer YOUR_AUTH_TOKEN'
+	}
+});
+
+const response = client.request(`
+	mutation {
+  	createCase(caseNo:"152", trafficOffence: "Did it", description: "Did", fine: "12"){
+    	id
+  	}
+	}
+`);
+
+response
+	.then((data) => {
+		console.log(data.allCases[0]);
+	})
+	.catch((err) => {
+		console.log(err);
+	});
 
 class Home extends Component {
 	state = {
