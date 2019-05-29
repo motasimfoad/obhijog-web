@@ -1,30 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { GraphQLClient } from 'graphql-request';
 
 import { loadCase, saveCase, sortCaseAndSave, clearLocalStorage } from './functions';
 import './style.scss';
-
-const client = new GraphQLClient('https://api.graph.cool/simple/v1/cjuvnbmub0zij0176xcsvoni9', {
-	headers: {
-		Authorization: 'Bearer YOUR_AUTH_TOKEN'
-	}
-});
-
-const response = client.request(`
-	mutation {
-  	createCase(caseNo:"152", trafficOffence: "Did it", description: "Did", fine: "12"){
-    	id
-  	}
-	}
-`);
-
-response
-	.then((data) => {
-		console.log(data.allCases[0]);
-	})
-	.catch((err) => {
-		console.log(err);
-	});
 
 class Home extends Component {
 	state = {
@@ -93,26 +70,33 @@ class Home extends Component {
 	};
 
 	renderCase = () => {
-		const renderCases = loadCase().map((data) => (
-			<div className="renderCaseMap" key={data.caseNo}>
-				<h3>Case Number : {data.caseNo}</h3>
-				<div>
-					<h3>Traffic Offence : {data.trafficOffence}</h3>
-				</div>
-				<div>
-					<h3>Description</h3>
-					<p> {data.description}</p>
-				</div>
-				<h3>Fine : {data.fine}</h3>
-			</div>
-		));
+		function getCase(callback) {
+			const caseData = loadCase();
+			callback(caseData);
+		}
 
-		return (
-			<div>
-				<h1>CASE INFO</h1>
-				{renderCases}
-			</div>
-		);
+		getCase((data) => {
+			data.map((data) => (
+				<div className="renderCaseMap" key={data.caseNo}>
+					<h3>Case Number : {data.caseNo}</h3>
+					<div>
+						<h3>Traffic Offence : {data.trafficOffence}</h3>
+					</div>
+					<div>
+						<h3>Description</h3>
+						<p> {data.description}</p>
+					</div>
+					<h3>Fine : {data.fine}</h3>
+				</div>
+			));
+
+			return (
+				<div>
+					<h1>CASE INFO</h1>
+					{/* {renderCases} */}
+				</div>
+			);
+		});
 	};
 
 	render() {

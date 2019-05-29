@@ -1,9 +1,32 @@
-const loadCase = () => {
-	if (localStorage.getItem('case') === null) {
-		return [];
-	} else {
-		return JSON.parse(localStorage.getItem('case'));
+import { GraphQLClient } from 'graphql-request';
+
+const client = new GraphQLClient('https://api.graph.cool/simple/v1/cjuvnbmub0zij0176xcsvoni9', {
+	headers: {
+		Authorization: 'Bearer YOUR_AUTH_TOKEN'
 	}
+});
+
+const loadCase = () => {
+	const response = client.request(`
+		query{
+			allCases{
+				id
+				caseNo
+				trafficOffence
+				description
+				fine
+			}
+		}
+	`);
+	response
+		.then((data) => {
+			console.log(data.allCases[0].description);
+			return data.allCases;
+		})
+		.catch((err) => {
+			console.log(err);
+			return [];
+		});
 };
 
 const saveCase = (dataJSON) => {
