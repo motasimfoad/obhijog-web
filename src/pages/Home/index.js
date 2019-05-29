@@ -4,12 +4,17 @@ import { loadCase, saveCase, sortCaseAndSave, clearLocalStorage } from './functi
 import './style.scss';
 
 class Home extends Component {
+	componentDidMount() {
+		this.renderCase();
+	}
+
 	state = {
 		caseNo: '',
 		trafficOffence: '',
 		description: '',
 		fine: '',
-		deleteCaseNo: ''
+		deleteCaseNo: '',
+		capturedCases: []
 	};
 
 	handleForm = (event) => {
@@ -70,13 +75,31 @@ class Home extends Component {
 	};
 
 	renderCase = () => {
-		function getCase(callback) {
-			const caseData = loadCase();
-			callback(caseData);
-		}
+		// const renderCases = [];
 
-		getCase((data) => {
-			data.map((data) => (
+		const queryCall = loadCase();
+
+		queryCall
+			.then((data) => {
+				// console.log(data.allCases[0].description);
+				this.setState({ capturedCases: data.allCases });
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+		// this.setState({
+		// 	captureCase: caseData
+		// });
+		// function getCase(callback) {
+		//
+		// 	console.log('caseData: ', caseData);
+		// 	callback(caseData);
+		// }
+
+		/* 		getCase((data) => {
+
+			renderCases = data.map((data) => (
 				<div className="renderCaseMap" key={data.caseNo}>
 					<h3>Case Number : {data.caseNo}</h3>
 					<div>
@@ -93,10 +116,29 @@ class Home extends Component {
 			return (
 				<div>
 					<h1>CASE INFO</h1>
-					{/* {renderCases} */}
+					{renderCases}
 				</div>
 			);
-		});
+		}); */
+	};
+
+	captureCase = (data) => {
+		return (
+			<div>
+				<h1>CASE INFO</h1>
+				<div className="renderCaseMap" key={data.caseNo}>
+					<h3>Case Number : {data.caseNo}</h3>
+					<div>
+						<h3>Traffic Offence : {data.trafficOffence}</h3>
+					</div>
+					<div>
+						<h3>Description</h3>
+						<p> {data.description}</p>
+					</div>
+					<h3>Fine : {data.fine}</h3>
+				</div>
+			</div>
+		);
 	};
 
 	render() {
@@ -164,7 +206,13 @@ class Home extends Component {
 				</Fragment>
 				<br />
 				<br />
-				<Fragment>{this.renderCase()}</Fragment>
+				<Fragment>
+					{this.state.capturedCases.length > 0 ? (
+						this.state.capturedCases.map((params) => this.captureCase(params))
+					) : (
+						'zero cases'
+					)}
+				</Fragment>
 				<br />
 				<br />
 				<Fragment>{this.printCaseJSON()}</Fragment>

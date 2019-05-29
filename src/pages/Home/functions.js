@@ -7,6 +7,7 @@ const client = new GraphQLClient('https://api.graph.cool/simple/v1/cjuvnbmub0zij
 });
 
 const loadCase = () => {
+	let cases = [];
 	const response = client.request(`
 		query{
 			allCases{
@@ -18,15 +19,7 @@ const loadCase = () => {
 			}
 		}
 	`);
-	response
-		.then((data) => {
-			console.log(data.allCases[0].description);
-			return data.allCases;
-		})
-		.catch((err) => {
-			console.log(err);
-			return [];
-		});
+	return response;
 };
 
 const saveCase = (dataJSON) => {
