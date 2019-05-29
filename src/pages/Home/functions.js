@@ -23,7 +23,63 @@ const loadCase = () => {
 };
 
 const saveCase = (dataJSON) => {
-	localStorage.setItem('case', JSON.stringify(dataJSON));
+	let cases = [];
+
+	const response = client.request(`
+	mutation {
+		createCase(caseNo: "${dataJSON.caseNo}", trafficOffence: "${dataJSON.trafficOffence}", description: "${dataJSON.description}", fine: "${dataJSON.fine}") {
+			id
+			trafficOffence
+			description
+			fine
+		}
+		}
+`);
+	return response;
+};
+
+const deleteCase = (deleteCaseNo) => {
+	let cases = [];
+	console.log(deleteCaseNo);
+
+	return loadCase()
+		.then((data) => {
+			console.log('1st then : ', data);
+			console.log(data.allCases);
+			const caseObj = data.allCases.find((obj) => {
+				return obj.caseNo === deleteCaseNo;
+			});
+
+			if (caseObj) {
+				return caseObj;
+			}
+			return 'Not Found';
+		})
+		.then((data) => {
+			if (typeof data === 'string') {
+				return;
+			}
+			console.log(data.id, data.caseNo);
+			console.log('2nd then : ', data);
+
+			return client.request(`
+			mutation {
+				deleteCase(id: "${data.id}"){
+					id
+					caseNo
+					trafficOffence
+					description
+					fine
+				}
+			}`);
+		})
+		.then((data) => {
+			console.log('Success');
+			return data;
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 };
 
 const clearLocalStorage = () => {
@@ -55,4 +111,4 @@ const sortCaseAndSave = () => {
 	window.location.reload();
 };
 
-export { loadCase, saveCase, sortCaseAndSave, clearLocalStorage };
+export { loadCase, saveCase, deleteCase, sortCaseAndSave, clearLocalStorage };
