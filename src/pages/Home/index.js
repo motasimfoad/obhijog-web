@@ -1,90 +1,77 @@
 import React, { Component, Fragment } from 'react';
 
-import { loadCase, saveCase, deleteCase, sortCaseAndSave, clearLocalStorage } from './functions';
+import Form from './Form';
+import Caselist from './Caselist';
+import { loadCase, deleteCase } from './server';
 import './style.scss';
 
+import Modal from './Modal';
+
 class Home extends Component {
-	componentDidMount() {
-		this.renderCase();
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			caseNo: '',
+			trafficOffence: '',
+			description: '',
+			fine: '',
+			deleteCaseNo: '',
+			capturedCases: [],
+			editCaseDatas: {},
+			isLoggedIn: false
+		};
 	}
 
-	state = {
-		caseNo: '',
-		trafficOffence: '',
-		description: '',
-		fine: '',
-		deleteCaseNo: '',
-		capturedCases: []
-	};
+	componentWillMount() {
+		const auth = localStorage.getItem('auth');
 
-	handleForm = (event) => {
-		this.setState({
-			[event.target.name]: event.target.value
-		});
-	};
-
-	onFormSubmit = (event) => {
-		event.preventDefault();
-
-		const caseData = this.state.capturedCases;
-
-		const hasNoDuplicate = caseData.every((data) => data.caseNo !== this.state.caseNo.trim()); // Every : Iterates through each array element and returns a single true/false based on callback condition, stops executing immediately upon encountering first false
-
-		const isFormEmpty =
-			this.state.caseNo === '' ||
-			this.state.trafficOffence === '' ||
-			this.state.description === '' ||
-			this.state.fine === '';
-
-		const invalidFineAndCaseNumber =
-			Number.isNaN(Number(this.state.caseNo.trim())) || Number.isNaN(Number(this.state.fine.trim()));
-		/* 
-		console.log('No Duplicate Found : ', hasNoDuplicate);
-		console.log('Form is Empty : ', isFormEmpty);
-		console.log('Case Number and Fine Numbers are invalid : ', invalidFineAndCaseNumber); */
-
-		if (hasNoDuplicate && !isFormEmpty && !invalidFineAndCaseNumber) {
-			this.createCase({
-				caseNo: this.state.caseNo.trim(),
-				trafficOffence: this.state.trafficOffence.trim(),
-				description: this.state.description.trim(),
-				fine: this.state.fine.trim()
+		if (auth) {
+			this.setState({
+				isLoggedIn: true
 			});
 
-			window.location.reload();
+			this.renderCase();
+		} else {
+			this.props.history.push({
+				pathname: '/'
+			});
 		}
-	};
+	}
 
-	searchAndDelete = (event) => {
-		event.preventDefault();
+	// createCase = (data, operation) => {
+	// 	const queryCall = saveCase(data, operation);
 
-		deleteCase(this.state.deleteCaseNo).then((data) => {
-			console.log('Success');
+	// 	queryCall
+	// 		.then((data) => {
+	// 			console.log('Success mutating data');
 
-			window.location.reload();
-		});
-	};
-
-	createCase = (data) => {
-		console.log(data);
-
-		const queryCall = saveCase(data);
-
-		queryCall
-			.then((data) => {
-				console.log('Success mutating data');
-				window.location.reload();
-			})
-			.catch((err) => {
-				'Something went wrong mutating data';
-			});
-	};
+	// 			this.renderCase();
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log('Something went wrong mutating data');
+	// 		});
+	// };
 
 	renderCase = () => {
 		const queryCall = loadCase();
 
 		queryCall
 			.then((data) => {
+				// data.allCases comes back sorted with caseNumber by string so the code below sorts the casees by caseNumber as Number
+				data.allCases.sort((a, b) => {
+					const firstCaseNum = Number(a.caseNo);
+					const secondCaseNum = Number(b.caseNo);
+
+					if (firstCaseNum < secondCaseNum) {
+						return -1; // return a
+					} else if (firstCaseNum > secondCaseNum) {
+						return 1; // return b
+					} else {
+						return 0; // return any one of them
+					}
+				});
+
 				this.setState({ capturedCases: data.allCases });
 			})
 			.catch((err) => {
@@ -92,80 +79,80 @@ class Home extends Component {
 			});
 	};
 
-	captureCase = (data) => {
-		return (
-			<div className="renderCaseMap" key={data.caseNo}>
-				<h3>Case Number : {data.caseNo}</h3>
-				<div>
-					<h3>Traffic Offence : {data.trafficOffence}</h3>
-				</div>
-				<div>
-					<h3>Description</h3>
-					<p> {data.description}</p>
-				</div>
-				<h3>Fine : {data.fine}</h3>
-			</div>
-		);
+	// captureCase = (data) => {
+	// 	return (
+	// 		<div
+	// 			className="renderCaseMap"
+	// 			key={data.caseNo}
+	// 			onDoubleClick={() => {
+	// 				this.setState({
+	// 					editCaseDatas: { ...data }
+	// 				});
+	// 			}}
+	// 		>
+	// 			<h3>Case Number : {data.caseNo}</h3>
+	// 			<div>
+	// 				<h3>Traffic Offence : {data.trafficOffence}</h3>
+	// 			</div>
+	// 			<div>
+	// 				<h3>Description :</h3>
+	// 				<p> {data.description}</p>
+	// 			</div>
+	// 			<h3>Fine : {data.fine}</h3>
+	// 		</div>
+	// 	);
+	// };
+
+	// genereateCaseDom = () => {
+	// 	const caseArray = this.state.capturedCases.map((params) => this.captureCase(params));
+	// 	return (
+	// 		<div>
+	// 			<h1>CASE INFO</h1>
+	// 			{caseArray}
+	// 		</div>
+	// 	);
+	// };
+	handleForm = (event) => {
+		this.setState({
+			[event.target.name]: event.target.value
+		});
 	};
 
-	genereateCaseDom = () => {
-		const caseArray = this.state.capturedCases.map((params) => this.captureCase(params));
+	searchAndDelete = (event) => {
+		event.preventDefault();
 
-		return (
-			<div>
-				<h1>CASE INFO</h1>
-				{caseArray}
-			</div>
-		);
+		deleteCase(this.state.deleteCaseNo).then((data) => {
+			console.log('4th then, Conclusion :', data);
+			this.renderCase();
+		});
+	};
+
+	closeModal = () => {
+		this.setState({
+			editCaseDatas: {}
+		});
+	};
+
+	setEditModal = (data) => {
+		this.setState({
+			editCaseDatas: data
+		});
 	};
 
 	render() {
-		return (
+		return this.state.isLoggedIn === true ? (
 			<div className="page-container">
-				<Fragment>
+				<header>
 					<main>
-						<h1>Make sure localhost is 3000</h1>
-						<button type="button" onClick={clearLocalStorage}>
-							Start From Scratch
-						</button>
-
-						<button type="button" onClick={sortCaseAndSave}>
-							Sort
-						</button>
+						<h1>অভিযোগ কেস তালিকা</h1>
 					</main>
-				</Fragment>
+				</header>
 				<br />
 				<br />
 				<br />
 				<br />
 				<Fragment>
-					<form>
-						<input type="text" placeholder="Case No." name="caseNo" onChange={this.handleForm} required />
-						<br />
-						<br />
-						<textarea
-							name="trafficOffence"
-							placeholder="Traffic Offence"
-							onChange={this.handleForm}
-							rows="5"
-							cols="33"
-							required
-						/>
-						<br />
-						<br />
-						<textarea
-							name="description"
-							placeholder="Description"
-							onChange={this.handleForm}
-							rows="5"
-							cols="33"
-							required
-						/>
-						<br />
-						<br />
-						<input type="text" placeholder="Fine" name="fine" onChange={this.handleForm} required />
-						<button onClick={this.onFormSubmit}>Submit Case</button>
-					</form>
+					<Form renderCase={this.renderCase.bind(this)} caseState={this.state} />
 				</Fragment>
 				<br />
 				<Fragment>
@@ -180,19 +167,43 @@ class Home extends Component {
 						<button type="submit" onClick={this.searchAndDelete}>
 							Delete Case
 						</button>
+						<button
+							onClick={() => {
+								localStorage.removeItem('auth');
+								this.setState({
+									isLoggedIn: false
+								});
+							}}
+						>
+							Logout
+						</button>
 					</form>
 				</Fragment>
 				<br />
 				<br />
 				<Fragment>
-					{this.state.capturedCases.length > 0 ? (
-						// this.state.capturedCases.map((params) => this.captureCase(params))
-						this.genereateCaseDom()
-					) : (
-						'zero cases'
+					{Object.values(this.state.editCaseDatas).length > 0 && (
+						<Modal
+							caseData={this.state.editCaseDatas}
+							closeModal={this.closeModal}
+							renderCase={this.renderCase}
+						/>
 					)}
 				</Fragment>
+				<br />
+				<br />
+				<Fragment>
+					{/* this.genereateCaseDom() */}
+					{Object.values(this.state.editCaseDatas).length === 0 &&
+						(this.state.capturedCases.length > 0 ? (
+							<Caselist setEditModal={this.setEditModal.bind(this)} caseState={this.state} />
+						) : (
+							'loading...'
+						))}
+				</Fragment>
 			</div>
+		) : (
+			<h1>You must be logged in to view this page</h1>
 		);
 	}
 }

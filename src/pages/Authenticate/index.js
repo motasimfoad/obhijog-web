@@ -1,11 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import { GraphQLClient } from 'graphql-request';
 
-const client = new GraphQLClient('https://api.graph.cool/simple/v1/cjuvnbmub0zij0176xcsvoni9');
+const client = new GraphQLClient('https://api.graph.cool/simple/v1/cjuvnbmub0zij0176xcsvoni9', {
+	headers: {
+		Authorization: 'Bearer YOUR_AUTH_TOKEN'
+	}
+});
 
 class Login extends Component {
 	state = {
-		name: '',
 		email: '',
 		password: '',
 		pageStatus: 'signUp' //determine between sign up and sign in
@@ -19,7 +22,6 @@ class Login extends Component {
 				mutation		
 				{
 					createUser(
-						name: "${this.state.name}"
 						authProvider: {
 							email: {
 								email: "${this.state.email}"
@@ -27,15 +29,15 @@ class Login extends Component {
 							}
 						}
 					) {
-						id
-						name
+						email
+						password
 					}
         }
 				`);
 
 		signupRequest
 			.then((data) => {
-				console.log('successfully signed up user', data);
+				console.log('successfully signed in user', data);
 			})
 			.catch((e) => {
 				console.log('error while signing up user ', e);
@@ -56,8 +58,8 @@ class Login extends Component {
 					) {
 						token
 						user {
-              id
-              name
+							email
+							password
             }
 					}
         }
@@ -68,7 +70,17 @@ class Login extends Component {
 				console.log('successfully signed in user', data);
 				// TODO keep the token in localstorage
 				localStorage.setItem('auth', data.signinUser.token);
-				this.props.history.push(`/home`);
+				// <Redirect to="/home" />;
+				// this.props.history.push(`/home`);
+				// this.context.router.push({
+				// 	pathname: '/home',
+				// 	state: { test: 'testing testing' }
+				// });
+
+				this.props.history.push({
+					pathname: '/home',
+					state: { loggedIn: true }
+				});
 			})
 			.catch((e) => {
 				console.log('error while signing in user ', e);
@@ -105,20 +117,6 @@ class Login extends Component {
 								<p>Please log in.</p>
 							</Fragment>
 						)}
-						<br />
-						{this.state.pageStatus === 'signUp' && (
-							<Fragment>
-								<input
-									type="text"
-									placeholder="Enter your Name"
-									name="name"
-									value={this.state.name}
-									onChange={this.handleForm}
-									required
-								/>
-							</Fragment>
-						)}
-						<br />
 						<br />
 						<input
 							type="email"
