@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+// <SingleCase data={data} setEditModal={this.props.setEditModal} caseState={this.props.caseState} />
+
 class SingleCase extends Component {
 	render() {
 		return (

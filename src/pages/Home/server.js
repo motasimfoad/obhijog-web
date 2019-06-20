@@ -33,25 +33,23 @@ const saveCase = (dataJSON, operation) => {
         description
         fine
       }
-      }
+    }
 `);
 	} else if (operation === 'updateCase') {
-		var response = client.request(
-			`
-    	mutation {
-		updateCase(id:"${dataJSON.id}", caseNo:"${dataJSON.caseNo}", 
-      trafficOffence:"${dataJSON.trafficOffence}", 
-      description:"${dataJSON.description}", 
-      fine: "${dataJSON.fine}"
-    ) {
-			id
-			trafficOffence
-			description
-			fine
-    }
-  }
-    `
-		);
+		var response = client.request(`
+    mutation {
+			updateCase(id:"${dataJSON.id}", caseNo:"${dataJSON.caseNo}", 
+				trafficOffence:"${dataJSON.trafficOffence}", 
+				description:"${dataJSON.description}", 
+				fine: "${dataJSON.fine}"
+			) {
+					id
+					trafficOffence
+					description
+					fine
+			}
+  	}
+  `);
 	}
 
 	return response;

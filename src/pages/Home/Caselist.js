@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import SingleCase from './SingleCase';
 
 // <Caselist caseState= {this.state} />

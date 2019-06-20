@@ -4,17 +4,13 @@ import { saveCase } from './server';
 // <Form createCase = {this.createCase.bind(this)} caseState = {this.state}/>
 
 class Form extends Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			caseNo: this.props.caseState.caseNo,
-			trafficOffence: this.props.caseState.trafficOffence,
-			description: this.props.caseState.description,
-			fine: this.props.caseState.fine,
-			capturedCases: this.props.caseState.capturedCases
-		};
-	}
+	state = {
+		caseNo: '',
+		trafficOffence: '',
+		description: '',
+		fine: '',
+		capturedCases: this.props.caseState.capturedCases
+	};
 
 	createCase = (data, operation) => {
 		const queryCall = saveCase(data, operation);

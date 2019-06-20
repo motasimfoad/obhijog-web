@@ -1,18 +1,16 @@
 import React, { Component, Fragment } from 'react';
 import { saveCase } from './server';
 
-class Modal extends Component {
-	constructor(props) {
-		super(props);
+// <Modal caseData={this.state.editCaseDatas} closeModal={this.closeModal} renderCase={this.renderCase} />
 
-		this.state = {
-			id: this.props.caseData.id,
-			caseNo: this.props.caseData.caseNo,
-			trafficOffence: this.props.caseData.trafficOffence,
-			description: this.props.caseData.description,
-			fine: this.props.caseData.fine
-		};
-	}
+class Modal extends Component {
+	state = {
+		id: this.props.caseData.id,
+		caseNo: this.props.caseData.caseNo,
+		trafficOffence: this.props.caseData.trafficOffence,
+		description: this.props.caseData.description,
+		fine: this.props.caseData.fine
+	};
 
 	onFormSubmit = (event) => {
 		event.preventDefault();
