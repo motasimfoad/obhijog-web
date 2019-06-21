@@ -1,16 +1,17 @@
 import React, { Component, Fragment } from 'react';
-import { GraphQLClient } from 'graphql-request';
 
-const client = new GraphQLClient('https://api.graph.cool/simple/v1/cjuvnbmub0zij0176xcsvoni9', {
-	headers: {
-		Authorization: 'Bearer YOUR_AUTH_TOKEN'
-	}
-});
+import { signUpAccount, logInAccount } from '../../server/server';
+
+// Utils
+function emailIsValid(email) {
+	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 class Login extends Component {
 	state = {
 		email: '',
 		password: '',
+		accountCreated: '',
 		pageStatus: 'signUp' //determine between sign up and sign in
 	};
 
@@ -18,28 +19,27 @@ class Login extends Component {
 		event.preventDefault();
 		console.log('sending the mutation request');
 
-		const signupRequest = client.request(`
-				mutation		
-				{
-					createUser(
-						authProvider: {
-							email: {
-								email: "${this.state.email}"
-								password: "${this.state.password}"
-							}
-						}
-					) {
-						email
-						password
-					}
-        }
-				`);
+		// Checking error prone codes
+		if (!emailIsValid(this.state.email) || this.state.email.length < 8) {
+			this.setState({
+				accountCreated: 'invalid-params'
+			});
+			return;
+		}
+
+		const signupRequest = signUpAccount({ email: this.state.email, password: this.state.password });
 
 		signupRequest
 			.then((data) => {
 				console.log('successfully signed in user', data);
+				this.setState({
+					accountCreated: 'new-account'
+				});
 			})
 			.catch((e) => {
+				this.setState({
+					accountCreated: 'user-exists'
+				});
 				console.log('error while signing up user ', e);
 			});
 	};
@@ -48,37 +48,16 @@ class Login extends Component {
 		event.preventDefault();
 		console.log('sending the mutation request');
 
-		const signinRequest = client.request(`
-				mutation {
-					signinUser(
-						email: {
-              email: "${this.state.email}"
-              password: "${this.state.password}"
-            }
-					) {
-						token
-						user {
-							email
-							password
-            }
-					}
-        }
-				`);
+		const signinRequest = logInAccount({ email: this.state.email, password: this.state.password });
 
 		signinRequest
 			.then((data) => {
 				console.log('successfully signed in user', data);
 				// TODO keep the token in localstorage
 				localStorage.setItem('auth', data.signinUser.token);
-				// <Redirect to="/home" />;
-				// this.props.history.push(`/home`);
-				// this.context.router.push({
-				// 	pathname: '/home',
-				// 	state: { test: 'testing testing' }
-				// });
 
 				this.props.history.push({
-					pathname: '/home',
+					pathname: '/dashboard',
 					state: { loggedIn: true }
 				});
 			})
@@ -99,7 +78,11 @@ class Login extends Component {
 		this.setState({ pageStatus });
 	};
 
-	// Render
+	changeAccountStatus = (accountCreated) => {
+		console.log('changed to ' + accountCreated);
+		this.setState({ accountCreated });
+	};
+
 	render() {
 		return (
 			<div className="page-container">
@@ -117,6 +100,20 @@ class Login extends Component {
 								<p>Please log in.</p>
 							</Fragment>
 						)}
+						<br />
+						<Fragment>
+							{this.state.accountCreated === 'invalid-params' && (
+								<h4>Invalid email or password should be minimum 8 characters</h4>
+							)}
+						</Fragment>
+						<Fragment>
+							{this.state.accountCreated === 'user-exists' && (
+								<h4>User already exists with that email</h4>
+							)}
+						</Fragment>
+						<Fragment>
+							{this.state.accountCreated === 'new-account' && <h4>SignUp successfully</h4>}
+						</Fragment>
 						<br />
 						<input
 							type="email"
@@ -159,6 +156,7 @@ class Login extends Component {
 								<u
 									onClick={() => {
 										this.changePageStatus('signIn');
+										this.changeAccountStatus('');
 									}}
 								>
 									click here to sign in
@@ -170,6 +168,7 @@ class Login extends Component {
 								<u
 									onClick={() => {
 										this.changePageStatus('signUp');
+										this.changeAccountStatus('');
 									}}
 								>
 									click here to sign up

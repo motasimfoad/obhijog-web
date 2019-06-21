@@ -1,0 +1,51 @@
+h1 {
+  text-align: center;
+}
+
+button,
+input,
+textarea {
+  padding: 1rem;
+  font-size: 1.8rem;
+  font-family: "Roboto", sans-serif;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.3);
+  border: 0;
+  border-radius: 5px;
+}
+
+button {
+  background: #de5b49;
+  color: white;
+  transition: transform 200ms ease-in;
+  margin-left: 0.1rem;
+}
+
+button:hover {
+  background: #324d5c;
+  transition: all 200ms ease-in-out;
+}
+
+button:active {
+  background: #253740;
+  transform: scale(0.95);
+}
+
+input {
+  background: #fff;
+  color: black;
+}
+
+.page-container {
+  width: 85vw;
+  margin: 1rem auto;
+}
+
+.renderCaseMap {
+  border: 1px solid white;
+  border-radius: 16px;
+  margin-bottom: 1rem;
+}
+
+.renderCaseMap>* {
+  padding: 0 1%;
+}

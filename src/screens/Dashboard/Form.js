@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { saveCase } from './server';
+import { saveCase } from '../../server/server';
 
-// <Form createCase = {this.createCase.bind(this)} caseState = {this.state}/>
+// <Form renderCase = {this.renderCase.bind(this)} caseState = {this.state}/>
 
 class Form extends Component {
 	state = {
@@ -22,7 +22,7 @@ class Form extends Component {
 				this.props.renderCase();
 			})
 			.catch((err) => {
-				console.log('Something went wrong mutating data');
+				console.log('Something went wrong while mutating data', err);
 			});
 	};
 

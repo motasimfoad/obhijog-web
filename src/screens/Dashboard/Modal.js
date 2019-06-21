@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { saveCase } from './server';
+import { saveCase } from '../../server/server';
 
 // <Modal caseData={this.state.editCaseDatas} closeModal={this.closeModal} renderCase={this.renderCase} />
 
@@ -36,7 +36,6 @@ class Modal extends Component {
 				'updateCase'
 			);
 			this.props.closeModal();
-			console.log('search and Delete redirection: ', this.state.redirection);
 		}
 	};
 
@@ -52,7 +51,7 @@ class Modal extends Component {
 				this.props.renderCase();
 			})
 			.catch((err) => {
-				'Something went wrong mutating data';
+				console.log('Something went wrong mutating data', err);
 			});
 	};
 
@@ -66,7 +65,7 @@ class Modal extends Component {
 		console.log('Render', this.props);
 
 		return (
-			<div className="Form" onDoubleClick={this.props.closeModal}>
+			<div className="Modal" onDoubleClick={this.props.closeModal}>
 				<Fragment>
 					<main>
 						<h1>Edit Modal (Double Click to close Modal)</h1>
