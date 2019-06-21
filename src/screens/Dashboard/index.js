@@ -36,7 +36,6 @@ class Dashboard extends Component {
 
 		queryCall
 			.then((data) => {
-				console.log(data);
 				/**
 				 * NOTE:
 				 * data.allCases comes back sorted by caseNumber but as a string ASCENDING ORDER (e.g. 1,10,11,12,13,...19,2,20) 
