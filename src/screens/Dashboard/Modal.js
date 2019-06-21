@@ -15,43 +15,38 @@ class Modal extends Component {
 	onFormSubmit = (event) => {
 		event.preventDefault();
 
-		const isFormEmpty =
-			this.state.caseNo === '' ||
-			this.state.trafficOffence === '' ||
-			this.state.description === '' ||
-			this.state.fine === '';
+		const caseNo = this.state.caseNo.trim();
+		const trafficOffence = this.state.trafficOffence.trim();
+		const description = this.state.description.trim();
+		const fine = this.state.fine.trim();
 
-		const invalidFineAndCaseNumber =
-			Number.isNaN(Number(this.state.caseNo.trim())) || Number.isNaN(Number(this.state.fine.trim()));
+		const isFormEmpty = caseNo === '' || trafficOffence === '' || description === '' || fine === '';
+		const invalidFineAndCaseNumber = Number.isNaN(Number(caseNo)) || Number.isNaN(Number(fine));
 
 		if (!isFormEmpty && !invalidFineAndCaseNumber) {
-			this.createCase(
-				{
-					id: this.state.id,
-					caseNo: this.state.caseNo.trim(),
-					trafficOffence: this.state.trafficOffence.trim(),
-					description: this.state.description.trim(),
-					fine: this.state.fine.trim()
-				},
-				'updateCase'
-			);
+			this.updateCase({
+				id: this.state.id,
+				caseNo,
+				trafficOffence,
+				description,
+				fine
+			});
 			this.props.closeModal();
 		}
 	};
 
-	createCase = (data, operation) => {
-		console.log('createCase', operation);
+	updateCase = (data) => {
+		console.log('updateCase running');
 
-		const queryCall = saveCase(data, operation);
+		const queryCall = saveCase(data, 'updateCase');
 
 		queryCall
 			.then((data) => {
-				console.log('Success mutating data');
-
+				console.log('Success updating case');
 				this.props.renderCase();
 			})
 			.catch((err) => {
-				console.log('Something went wrong mutating data', err);
+				console.log('Something went wrong while updating case', err);
 			});
 	};
 
@@ -62,8 +57,6 @@ class Modal extends Component {
 	};
 
 	render() {
-		console.log('Render', this.props);
-
 		return (
 			<div className="Modal" onDoubleClick={this.props.closeModal}>
 				<Fragment>

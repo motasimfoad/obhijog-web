@@ -63,17 +63,17 @@ const loadCase = () => {
 	return response;
 };
 
-const saveCase = (dataJSON, operation) => {
+const saveCase = (data, operation) => {
 	console.log('SaveCase which is currently doing the operation : ', operation);
 
 	if (operation === 'createCase') {
 		var response = client.request(`
 			mutation {
 				createCase(
-					caseNo: "${dataJSON.caseNo}", 
-					trafficOffence: "${dataJSON.trafficOffence}", 
-					description: "${dataJSON.description}", 
-					fine: "${dataJSON.fine}"
+					caseNo: "${data.caseNo}", 
+					trafficOffence: "${data.trafficOffence}", 
+					description: "${data.description}", 
+					fine: "${data.fine}"
 				) {
 						id
 						trafficOffence
@@ -85,11 +85,11 @@ const saveCase = (dataJSON, operation) => {
 		var response = client.request(`
 			mutation {
 				updateCase(
-					id:"${dataJSON.id}", 
-					caseNo:"${dataJSON.caseNo}", 
-					trafficOffence:"${dataJSON.trafficOffence}", 
-					description:"${dataJSON.description}", 
-					fine: "${dataJSON.fine}"
+					id:"${data.id}", 
+					caseNo:"${data.caseNo}", 
+					trafficOffence:"${data.trafficOffence}", 
+					description:"${data.description}", 
+					fine: "${data.fine}"
 				) {
 						id
 						trafficOffence

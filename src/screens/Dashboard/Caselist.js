@@ -6,7 +6,14 @@ import SingleCase from './SingleCase';
 class Caselist extends Component {
 	render() {
 		const caseArray = this.props.caseState.capturedCases.map((data) => {
-			return <SingleCase data={data} setEditModal={this.props.setEditModal} caseState={this.props.caseState} />;
+			return (
+				<SingleCase
+					key={data.caseNo}
+					data={data}
+					setEditModal={this.props.setEditModal}
+					caseState={this.props.caseState}
+				/>
+			);
 		});
 		return (
 			<div>

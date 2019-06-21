@@ -8,21 +8,45 @@ class Form extends Component {
 		caseNo: '',
 		trafficOffence: '',
 		description: '',
-		fine: '',
-		capturedCases: this.props.caseState.capturedCases
+		fine: ''
 	};
 
-	createCase = (data, operation) => {
-		const queryCall = saveCase(data, operation);
+	onFormSubmit = (event) => {
+		event.preventDefault();
+
+		const caseNo = this.state.caseNo.trim();
+		const trafficOffence = this.state.trafficOffence.trim();
+		const description = this.state.description.trim();
+		const fine = this.state.fine.trim();
+
+		const caseData = this.props.caseState.capturedCases;
+
+		const hasNoDuplicate = caseData.every((data) => data.caseNo !== caseNo); // Every : Iterates through each array element and returns a single true/false based on callback condition, stops executing immediately upon encountering first false
+		const isFormEmpty = caseNo === '' || trafficOffence === '' || description === '' || fine === '';
+		const invalidFineAndCaseNumber = Number.isNaN(Number(caseNo)) || Number.isNaN(Number(fine));
+
+		if (hasNoDuplicate && !isFormEmpty && !invalidFineAndCaseNumber) {
+			this.createCase({
+				caseNo,
+				trafficOffence,
+				description,
+				fine
+			});
+		}
+	};
+
+	createCase = (data) => {
+		console.log('createCase running');
+
+		const queryCall = saveCase(data, 'createCase');
 
 		queryCall
 			.then((data) => {
-				console.log('Success mutating data');
-
+				console.log('Success creating case');
 				this.props.renderCase();
 			})
 			.catch((err) => {
-				console.log('Something went wrong while mutating data', err);
+				console.log('Something went wrong while creating case', err);
 			});
 	};
 
@@ -30,35 +54,6 @@ class Form extends Component {
 		this.setState({
 			[event.target.name]: event.target.value
 		});
-	};
-
-	onFormSubmit = (event) => {
-		event.preventDefault();
-
-		const caseData = this.state.capturedCases;
-
-		const hasNoDuplicate = caseData.every((data) => data.caseNo !== this.state.caseNo.trim()); // Every : Iterates through each array element and returns a single true/false based on callback condition, stops executing immediately upon encountering first false
-
-		const isFormEmpty =
-			this.state.caseNo === '' ||
-			this.state.trafficOffence === '' ||
-			this.state.description === '' ||
-			this.state.fine === '';
-
-		const invalidFineAndCaseNumber =
-			Number.isNaN(Number(this.state.caseNo.trim())) || Number.isNaN(Number(this.state.fine.trim()));
-
-		if (hasNoDuplicate && !isFormEmpty && !invalidFineAndCaseNumber) {
-			this.createCase(
-				{
-					caseNo: this.state.caseNo.trim(),
-					trafficOffence: this.state.trafficOffence.trim(),
-					description: this.state.description.trim(),
-					fine: this.state.fine.trim()
-				},
-				'createCase'
-			);
-		}
 	};
 
 	render() {
