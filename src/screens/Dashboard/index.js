@@ -92,9 +92,9 @@ class Dashboard extends Component {
 
 		deleteCase(this.state.deleteCaseNo)
 			.then((data) => {
-				console.log('4th then, Conclusion :', data);
+				console.log('3rd then, Conclusion :', data);
 
-				if (typeof data === 'object') {
+				if (data) {
 					this.renderCase();
 				}
 			})

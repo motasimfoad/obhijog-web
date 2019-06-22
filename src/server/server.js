@@ -112,17 +112,13 @@ const deleteCase = (deleteCaseNo) => {
 				return obj.caseNo === deleteCaseNo;
 			});
 
-			if (caseObj) {
-				return caseObj;
-			}
-			return 'CaseNo Not Found';
-		})
-		.then((data) => {
-			if (typeof data === 'string') {
-				console.log('2nd then, Case not Found : ', data);
-				return data;
+			if (!caseObj) {
+				throw new Error('Case Not Found');
 			}
 
+			return caseObj;
+		})
+		.then((data) => {
 			console.log('2nd then, Case Found, Retrieving the id and Now about to delete the case with caseID: ', data);
 
 			return client.request(`
@@ -135,11 +131,6 @@ const deleteCase = (deleteCaseNo) => {
 						fine
 					}
 				}`);
-		})
-		.then((data) => {
-			console.log('3rd then, Final result :', data);
-
-			return data;
 		})
 		.catch((err) => {
 			console.log(err);
