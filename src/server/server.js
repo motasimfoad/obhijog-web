@@ -106,20 +106,23 @@ const deleteCase = (deleteCaseNo) => {
 	// ***********
 	const response = loadCase()
 		.then((data) => {
-			console.log(`1st then, Searching Caseses matching with ${deleteCaseNo}: `, data);
+			console.log(`1st then, Searching Caseses matching with case no : ${deleteCaseNo} : `, data);
 
 			const caseObj = data.allCases.find((obj) => {
 				return obj.caseNo === deleteCaseNo;
 			});
 
 			if (!caseObj) {
-				throw new Error('Case Not Found');
+				throw new Error('Case Number Not Found');
 			}
 
 			return caseObj;
 		})
 		.then((data) => {
-			console.log('2nd then, Case Found, Retrieving the id and Now about to delete the case with caseID: ', data);
+			console.log(
+				'2nd then, Case Found, Retrieving the id and Now about to delete the case with caseID : ',
+				data
+			);
 
 			return client.request(`
 				mutation {
@@ -133,7 +136,7 @@ const deleteCase = (deleteCaseNo) => {
 				}`);
 		})
 		.catch((err) => {
-			console.log(err);
+			console.log('Something went wrong while deleting case : ', err);
 		});
 	// ***********
 

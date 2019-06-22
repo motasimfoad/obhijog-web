@@ -1,17 +1,11 @@
 [{
   "caseNo": "137",
-  "trafficOffence": "General provision for punishment of offence",
-  "fine": "200"
+  "trafficOffence": "Driving exceeding limit",
+  "description": "Driver exceeded speed limit while driving the vehicke",
+  "fine": "700"
 }, {
-  "caseNo": "139",
-  "trafficOffence": "Fitting and using of prohibited horns or other sound producing device",
-  "fine": "100"
-}, {
-  "caseNo": "140",
-  "trafficOffence": "Fitting and using of prohibited horns or other sound producing device",
-  "fine": "200"
-}, {
-  "caseNo": "200",
-  "trafficOffence": "Fitting and using of prohibited horns or other sound producing device",
+  "caseNo": "138",
+  "trafficOffence": "Parking on main road",
+  "description": "Driver parked his vehicle on the main road disrupting public transportation",
   "fine": "500"
 }]
