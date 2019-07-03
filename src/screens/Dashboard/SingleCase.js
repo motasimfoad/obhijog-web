@@ -18,7 +18,7 @@ class SingleCase extends Component {
 				</div>
 				<div>
 					<h3>Description :</h3>
-					<p> {this.props.data.description}</p>
+					<h3> {this.props.data.description}</h3>
 				</div>
 				<h3>Fine : {this.props.data.fine}</h3>
 			</div>

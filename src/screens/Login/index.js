@@ -12,7 +12,7 @@ class Login extends Component {
 		email: '',
 		password: '',
 		accountCreated: '',
-		pageStatus: 'signUp' //determine between sign up and sign in
+		pageStatus: 'signIn' //determine between sign up and sign in
 	};
 
 	signUp = (event) => {
@@ -54,7 +54,8 @@ class Login extends Component {
 			.then((data) => {
 				console.log('successfully signed in user', data);
 				// TODO keep the token in localstorage
-				localStorage.setItem('auth', data.signinUser.token);
+
+				localStorage.setItem('auth', JSON.stringify({ token: data.signinUser.token, id: data.signinUser.user.id }));
 
 				this.props.history.push({
 					pathname: '/dashboard',
@@ -107,13 +108,9 @@ class Login extends Component {
 							)}
 						</Fragment>
 						<Fragment>
-							{this.state.accountCreated === 'user-exists' && (
-								<h4>User already exists with that email</h4>
-							)}
+							{this.state.accountCreated === 'user-exists' && <h4>User already exists with that email</h4>}
 						</Fragment>
-						<Fragment>
-							{this.state.accountCreated === 'new-account' && <h4>SignUp successfully</h4>}
-						</Fragment>
+						<Fragment>{this.state.accountCreated === 'new-account' && <h4>SignUp successfully</h4>}</Fragment>
 						<br />
 						<input
 							type="email"
@@ -149,7 +146,7 @@ class Login extends Component {
 							)}
 						</div>
 					</div>
-					<div className="footer-note">
+					{/* <div className="footer-note">
 						{this.state.pageStatus === 'signUp' ? (
 							<Fragment>
 								Already signed up?{' '}
@@ -175,7 +172,7 @@ class Login extends Component {
 								</u>
 							</Fragment>
 						)}
-					</div>
+					</div> */}
 				</div>
 			</div>
 		);

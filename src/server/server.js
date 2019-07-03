@@ -37,11 +37,66 @@ const logInAccount = (data) => {
 				) {
 					token
 					user {
+						id
 						email
 						password
 					}
 				}
 			}
+	`);
+
+	return response;
+};
+
+const addASearch = (caseNumber, userID) => {
+	const response = client.request(`
+	mutation searchACase {
+		createSearchedCase(
+			caseNo: "${caseNumber}",
+			userId: "${userID}"
+		) {
+			caseNo
+			id
+			createdAt
+			user {
+				id
+				email
+			}
+		}
+	}
+  `);
+
+	return response;
+};
+
+/* DO NOT DELETE: REFERENCE FOR FILTERING DATES
+
+		query findDailyTrend {
+			allSearchedCases(
+				filter: {
+					createdAt_gt: "2019-07-01T16:00:00.000Z",
+					createdAt_lte: "2019-07-02T15:31:00.000Z" 
+				}
+				orderBy: createdAt_ASC
+			){
+			caseNo
+			}
+		}
+	`
+*/
+
+const loadSearchCases = () => {
+	const response = client.request(`
+		query findDailyTrend {
+			allSearchedCases(
+				filter: {
+					createdAt_gt: "2019-07-01T16:00:00.000Z"
+				}
+				orderBy: createdAt_ASC
+			){
+			caseNo
+			}
+		}
 	`);
 
 	return response;
@@ -119,10 +174,7 @@ const deleteCase = (deleteCaseNo) => {
 			return caseObj;
 		})
 		.then((data) => {
-			console.log(
-				'2nd then, Case Found, Retrieving the id and Now about to delete the case with caseID : ',
-				data
-			);
+			console.log('2nd then, Case Found, Retrieving the id and Now about to delete the case with caseID : ', data);
 
 			return client.request(`
 				mutation {
@@ -143,4 +195,4 @@ const deleteCase = (deleteCaseNo) => {
 	return response;
 };
 
-export { signUpAccount, logInAccount, loadCase, saveCase, deleteCase };
+export { signUpAccount, logInAccount, loadCase, loadSearchCases, addASearch, saveCase, deleteCase };
