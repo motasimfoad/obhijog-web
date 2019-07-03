@@ -1,0 +1,11 @@
+[{
+  "caseNo": "137",
+  "trafficOffence": "Driving exceeding limit",
+  "description": "Driver exceeded speed limit while driving the vehicke",
+  "fine": "700"
+}, {
+  "caseNo": "138",
+  "trafficOffence": "Parking on main road",
+  "description": "Driver parked his vehicle on the main road disrupting public transportation",
+  "fine": "500"
+}]
